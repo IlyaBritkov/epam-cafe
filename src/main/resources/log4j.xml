@@ -11,7 +11,7 @@
     <appender name="fileAppender" class="org.apache.log4j.RollingFileAppender">
         <param name="maxFileSize" value="10MB"/>
         <param name="maxBackupIndex" value="5"/>
-        <param name="file" value="build/log/logfile.log"/>
+        <param name="file" value="target/log/logfile.log"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern"
                    value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%C{1}:%M:%L - %m%n"/>
@@ -20,7 +20,7 @@
 
     <category name="com.epam">
         <!--Options: all, trace, debug, info, warn, error, fatal-->
-        <priority value="info"/>
+        <priority value="debug"/>
         <appender-ref ref="fileAppender"/>
     </category>
 
