@@ -1,17 +1,20 @@
 package com.epam.db;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public interface ConnectionPool {
-    Connection getConnection();
+    Connection getConnection() throws SQLException;
 
     boolean releaseConnection(Connection connection);
 
-    String getUrl();
+    String getURL();
 
-    String getUser();
+    String getUSER();
 
-    String getPassword();
+    String getPASSWORD();
 
     int getSize();
+
+    void shutdown();
 }

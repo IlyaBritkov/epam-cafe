@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
-<log4j:configuration>
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
     <appender name="consoleAppender" class="org.apache.log4j.ConsoleAppender">
         <param name="Target" value="System.out"/>
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %C{1}:%M:%L - %m%n"/>
+        <layout class="fr.jcgay.log4j.color.layout.ColorEnhancedPatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} #highlight(%-5p) %C{1}:%M:%L - %m%n"/>
         </layout>
+        <!--        <layout class="org.apache.log4j.PatternLayout">-->
+        <!--            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %C{1}:%M:%L - %m%n"/>-->
+        <!--        </layout>-->
     </appender>
 
     <appender name="fileAppender" class="org.apache.log4j.RollingFileAppender">
@@ -22,6 +25,7 @@
         <!--Options: all, trace, debug, info, warn, error, fatal-->
         <priority value="debug"/>
         <appender-ref ref="fileAppender"/>
+        <appender-ref ref="consoleAppender"/>
     </category>
 
 </log4j:configuration>
