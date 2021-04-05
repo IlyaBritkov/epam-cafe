@@ -13,11 +13,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Singleton
  **/
-// todo: add thread safety
 public class ConnectionPoolImpl implements ConnectionPool {
     private final static Logger logger = LoggerFactory.getLogger(ConnectionPoolImpl.class);
 
-    private static volatile ConnectionPoolImpl INSTANCE;
     private final static DBConfiguration dbConfiguration = DBConfiguration.getInstance();
 
     @Getter
@@ -34,22 +32,18 @@ public class ConnectionPoolImpl implements ConnectionPool {
     private final Queue<Connection> availableConnections = new LinkedBlockingQueue<>();
     private final Queue<Connection> usedConnections = new LinkedBlockingQueue<>();
 
+    private static ConnectionPoolImpl INSTANCE = getInstance();
+
     private ConnectionPoolImpl() {
     }
 
     public static ConnectionPoolImpl getInstance() {
-        ConnectionPoolImpl localInstance = INSTANCE;
-        if (localInstance == null) {
-            synchronized (ConnectionPoolImpl.class) {
-                localInstance = INSTANCE;
-                if (localInstance == null) {
-                    INSTANCE = localInstance = new ConnectionPoolImpl();
-                    init();
-                    logger.info("Connection pool was initialized");
-                }
-            }
+        if (INSTANCE == null) {
+            INSTANCE = new ConnectionPoolImpl();
+            init();
+            logger.info("ConnectionPool was initialized");
         }
-        return localInstance;
+        return INSTANCE;
     }
 
     private static void init() {

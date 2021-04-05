@@ -2,6 +2,8 @@ package com.epam.db;
 
 import com.epam.util.PropertyReader;
 import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
@@ -10,13 +12,16 @@ import java.util.Objects;
  **/
 @Getter
 public final class DBConfiguration {
-    private static volatile DBConfiguration INSTANCE;
+    private final static Logger logger = LoggerFactory.getLogger(DBConfiguration.class);
+
     private final String URL;
     private final String USER;
     private final String PASSWORD;
     private final int INITIAL_POOL_SIZE;
     private final int MAX_POOL_SIZE;
     private final int MAX_TIMEOUT_VALIDATE_CONNECTION;
+
+    private static DBConfiguration INSTANCE;
 
     private DBConfiguration() {
         this.URL = Objects.requireNonNull(PropertyReader.getProperties().getProperty("url"));
@@ -28,15 +33,10 @@ public final class DBConfiguration {
     }
 
     public static DBConfiguration getInstance() {
-        DBConfiguration localInstance = INSTANCE;
-        if (localInstance == null) {
-            synchronized (DBConfiguration.class) {
-                localInstance = INSTANCE;
-                if (localInstance == null) {
-                    INSTANCE = localInstance = new DBConfiguration();
-                }
-            }
+        if (INSTANCE == null) {
+            INSTANCE = new DBConfiguration();
+            logger.info("DBConfiguration was initialized");
         }
-        return localInstance;
+        return INSTANCE;
     }
 }
