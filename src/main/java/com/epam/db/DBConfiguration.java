@@ -2,8 +2,7 @@ package com.epam.db;
 
 import com.epam.util.PropertyReader;
 import lombok.Getter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
 
@@ -11,9 +10,8 @@ import java.util.Objects;
  * Singleton
  **/
 @Getter
+@Slf4j
 public final class DBConfiguration {
-    private final static Logger logger = LoggerFactory.getLogger(DBConfiguration.class);
-
     private final String URL;
     private final String USER;
     private final String PASSWORD;
@@ -35,7 +33,7 @@ public final class DBConfiguration {
     public static DBConfiguration getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new DBConfiguration();
-            logger.info("DBConfiguration was initialized");
+            log.info("DBConfiguration was initialized");
         }
         return INSTANCE;
     }

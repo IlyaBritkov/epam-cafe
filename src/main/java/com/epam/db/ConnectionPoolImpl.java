@@ -1,8 +1,7 @@
 package com.epam.db;
 
 import lombok.Getter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,9 +12,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Singleton
  **/
+@Slf4j
 public class ConnectionPoolImpl implements ConnectionPool {
-    private final static Logger logger = LoggerFactory.getLogger(ConnectionPoolImpl.class);
-
     private final static DBConfiguration dbConfiguration = DBConfiguration.getInstance();
 
     @Getter
@@ -41,7 +39,7 @@ public class ConnectionPoolImpl implements ConnectionPool {
         if (INSTANCE == null) {
             INSTANCE = new ConnectionPoolImpl();
             init();
-            logger.info("ConnectionPool was initialized");
+            log.info("ConnectionPool was initialized");
         }
         return INSTANCE;
     }
@@ -57,7 +55,7 @@ public class ConnectionPoolImpl implements ConnectionPool {
             return DriverManager.getConnection(url, user, password);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-            logger.error("Exception occurred while trying get connection: {}", throwables.toString());
+            log.error("Exception occurred while trying get connection: {}", throwables.toString());
             throw new RuntimeException("Creation of connection is failed: " + throwables);
         }
     }
@@ -67,10 +65,10 @@ public class ConnectionPoolImpl implements ConnectionPool {
         if (availableConnections.isEmpty()) {
             if (usedConnections.size() < MAX_POOL_SIZE) {
                 availableConnections.add(createConnection(URL, USER, PASSWORD));
-                logger.debug("Added one more connection to the connection pool: {}", availableConnections.peek());
+                log.debug("Added one more connection to the connection pool: {}", availableConnections.peek());
             } else {
                 RuntimeException exception = new RuntimeException("Maximum pool size reached, no available connections!");
-                logger.error("RuntimeException occurred: {}", exception.toString());
+                log.error("RuntimeException occurred: {}", exception.toString());
                 throw exception;
             }
         }
@@ -83,18 +81,18 @@ public class ConnectionPoolImpl implements ConnectionPool {
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-            logger.error("Exception occurred while connection validation: {}", throwables.toString());
+            log.error("Exception occurred while connection validation: {}", throwables.toString());
         }
 
         usedConnections.add(connection);
-        logger.debug("Connection {} was taken", connection);
+        log.debug("Connection {} was taken", connection);
         return connection;
     }
 
     @Override
     public boolean releaseConnection(Connection connection) {
         availableConnections.add(connection);
-        logger.debug("Connection {} was returned to the connection pool", connection);
+        log.debug("Connection {} was returned to the connection pool", connection);
         return usedConnections.remove(connection);
     }
 
@@ -109,11 +107,11 @@ public class ConnectionPoolImpl implements ConnectionPool {
             try {
                 c.close();
             } catch (SQLException throwables) {
-                logger.error("Exception occurred: {}", throwables.toString());
+                log.error("Exception occurred: {}", throwables.toString());
                 throwables.printStackTrace();
             }
         }
         availableConnections.clear();
-        logger.debug("Connection pool was shutdown");
+        log.debug("Connection pool was shutdown");
     }
 }
