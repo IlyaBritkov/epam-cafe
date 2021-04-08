@@ -17,14 +17,22 @@ public class User extends AbstractBaseEntity {
     private String lastName;
 
     @Setter(AccessLevel.NONE)
-    private final UserRole userRole;
+    private final UserRole role;
 
-    public User(Long id, String login, String password, String firstName, String lastName, UserRole userRole) {
+    public User(String login, String password, String firstName, String lastName, UserRole role) {
+        this.login = login;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.role = role;
+    }
+
+    public User(Long id, String login, String password, String firstName, String lastName, UserRole role) {
         super(id);
         this.login = login;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.userRole = userRole;
+        this.role = role;
     }
 }

@@ -27,18 +27,29 @@ public class Oder extends AbstractBaseEntity {
     private LocalDateTime actualPickUpDateTime;
 
     @Setter
-    private OrderStatus orderStatus;
+    private OrderStatus status;
 
     @Setter
     private PaymentType paymentType;
 
     private final HashMap<Product, Integer> orderSet = new HashMap<>(); // value - amount
 
-    public Oder(Long id, Client client, LocalDateTime orderDateTime, LocalDateTime expectedPickUpDateTime, PaymentType paymentType) {
+    public Oder(Client client, LocalDateTime orderDateTime, LocalDateTime expectedPickUpDateTime, PaymentType paymentType) {
+        this.client = client;
+        this.orderDateTime = orderDateTime;
+        this.expectedPickUpDateTime = expectedPickUpDateTime;
+        this.status = OrderStatus.ORDERED;
+        this.paymentType = paymentType;
+    }
+
+    public Oder(Long id, Client client, LocalDateTime orderDateTime, LocalDateTime expectedPickUpDateTime,
+                @Nullable LocalDateTime actualPickUpDateTime, OrderStatus status, PaymentType paymentType) {
         super(id);
         this.client = client;
         this.orderDateTime = orderDateTime;
         this.expectedPickUpDateTime = expectedPickUpDateTime;
+        this.actualPickUpDateTime = actualPickUpDateTime;
+        this.status = status;
         this.paymentType = paymentType;
     }
 }

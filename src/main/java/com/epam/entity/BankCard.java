@@ -29,6 +29,15 @@ public class BankCard extends AbstractBaseEntity {
 
     private final List<Client> holderList = new ArrayList<>();
 
+    public BankCard(Long cardNumber, int monthExpired, int yearExpired, int csv, String firstName, String lastName) {
+        this.cardNumber = cardNumber;
+        this.monthExpired = monthExpired;
+        this.yearExpired = yearExpired;
+        this.csv = csv;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public BankCard(Long id, Long cardNumber, int monthExpired, int yearExpired, int csv, String firstName, String lastName) {
         super(id);
         this.cardNumber = cardNumber;

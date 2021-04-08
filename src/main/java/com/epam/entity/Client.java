@@ -14,25 +14,33 @@ import java.util.List;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-public class Client extends User { // todo
+public class Client extends User {
     @Setter
     private int loyaltyPoints;
 
     @Setter
-    private ClientStatus clientStatus = ClientStatus.NORMAL;
+    private ClientStatus clientStatus;
 
     private final List<BankCard> bankCardList = new ArrayList<>();
 
     private final List<Product> favoriteProductList = new ArrayList<>();
 
-    // TODO FIX IT
-    public Client(Long id, String login, String password, String firstName, String lastName) {
-        super(id, login, password, firstName, lastName, UserRole.CLIENT);
+    public Client(String login, String password, String firstName, String lastName, UserRole role) {
+        super(login, password, firstName, lastName, role);
+        this.loyaltyPoints = 0;
+        this.clientStatus = ClientStatus.NORMAL;
     }
 
-    public Client(Long id, String login, String password, String firstName, String lastName, UserRole userRole, int loyaltyPoints) {
-        super(id, login, password, firstName, lastName, userRole);
+    public Client(String login, String password, String firstName, String lastName, UserRole role, int loyaltyPoints) {
+        super(login, password, firstName, lastName, role);
         this.loyaltyPoints = loyaltyPoints;
+        this.clientStatus = ClientStatus.NORMAL;
+    }
+
+    public Client(Long id, String login, String password, String firstName, String lastName, UserRole role, int loyaltyPoints, ClientStatus clientStatus) {
+        super(id, login, password, firstName, lastName, role);
+        this.loyaltyPoints = loyaltyPoints;
+        this.clientStatus = clientStatus;
     }
 
     public boolean addBankCard(BankCard bankCard) {

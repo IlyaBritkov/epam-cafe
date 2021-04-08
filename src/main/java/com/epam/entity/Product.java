@@ -1,6 +1,7 @@
 package com.epam.entity;
 
 import lombok.*;
+import org.jetbrains.annotations.Nullable;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 
@@ -15,6 +16,7 @@ import java.util.List;
 public class Product extends AbstractBaseEntity {
     private String name;
 
+    @Nullable
     private String description;
 
     private CurrencyUnit currencyUnit;
@@ -28,6 +30,13 @@ public class Product extends AbstractBaseEntity {
 
     @Setter(AccessLevel.NONE)
     private final List<Feedback> feedbackList = new ArrayList<>();
+
+    public Product(String name, @Nullable String description, CurrencyUnit currencyUnit, Money price) {
+        this.name = name;
+        this.description = description;
+        this.currencyUnit = currencyUnit;
+        this.price = price;
+    }
 
     public Product(Long id, String name, String description, CurrencyUnit currencyUnit, Money price) {
         super(id);

@@ -1,14 +1,16 @@
 package com.epam.entity;
 
 import lombok.*;
+import org.jetbrains.annotations.Nullable;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
 public abstract class AbstractBaseEntity {
-    @NonNull
+    @Nullable
     @EqualsAndHashCode.Include
-    private final Long id;
+    private Long id;
 
 }
