@@ -4,9 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.jetbrains.annotations.Nullable;
 
 @Getter
 @Setter
@@ -15,11 +13,15 @@ import java.util.List;
 public class Category extends AbstractBaseEntity {
     private String name;
 
+    @Nullable
     private String description;
 
-    private final List<Product> productList = new ArrayList<>();
+    public Category(String name, @Nullable String description) {
+        this.name = name;
+        this.description = description;
+    }
 
-    public Category(Long id, String name, String description) {
+    public Category(Long id, String name, @Nullable String description) {
         super(id);
         this.name = name;
         this.description = description;

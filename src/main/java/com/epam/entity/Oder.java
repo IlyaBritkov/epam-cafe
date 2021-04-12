@@ -1,7 +1,7 @@
 package com.epam.entity;
 
-import com.epam.enums.OrderStatus;
-import com.epam.enums.PaymentType;
+import com.epam.entity.enums.OrderStatus;
+import com.epam.entity.enums.PaymentType;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;

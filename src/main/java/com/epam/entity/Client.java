@@ -1,15 +1,11 @@
 package com.epam.entity;
 
-import com.epam.enums.ClientStatus;
-import com.epam.enums.UserRole;
+import com.epam.entity.enums.ClientStatus;
+import com.epam.entity.enums.UserRole;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Getter
 @ToString(callSuper = true)
@@ -20,10 +16,6 @@ public class Client extends User {
 
     @Setter
     private ClientStatus clientStatus;
-
-    private final List<BankCard> bankCardList = new ArrayList<>();
-
-    private final List<Product> favoriteProductList = new ArrayList<>();
 
     public Client(String login, String password, String firstName, String lastName, UserRole role) {
         super(login, password, firstName, lastName, role);
@@ -43,27 +35,4 @@ public class Client extends User {
         this.clientStatus = clientStatus;
     }
 
-    public boolean addBankCard(BankCard bankCard) {
-        return bankCardList.add(bankCard);
-    }
-
-    public boolean addBankCards(List<BankCard> bankCards) {
-        return bankCardList.addAll(bankCards);
-    }
-
-    public boolean addBankCards(BankCard... bankCards) {
-        return bankCardList.addAll(Arrays.asList(bankCards));
-    }
-
-    public boolean removeBankCard(BankCard bankCard) {
-        return bankCardList.remove(bankCard);
-    }
-
-    public boolean removeBankCard(List<BankCard> bankCards) {
-        return bankCardList.removeAll(bankCards);
-    }
-
-    public boolean removeBankCard(BankCard... bankCards) {
-        return bankCardList.removeAll(Arrays.asList(bankCards));
-    }
 }

@@ -28,4 +28,11 @@
         <appender-ref ref="consoleAppender"/>
     </category>
 
+    <category name="com.epam.repository">
+        <!--Options: all, trace, debug, info, warn, error, fatal-->
+        <priority value="all"/>
+        <appender-ref ref="fileAppender"/>
+        <appender-ref ref="consoleAppender"/>
+    </category>
+
 </log4j:configuration>

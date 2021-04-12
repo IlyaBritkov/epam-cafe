@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS "Product" (
 
 CREATE TABLE IF NOT EXISTS "Category" (
     id SERIAL PRIMARY KEY,
-    "name" VARCHAR(35) NOT NULL,
+    "name" VARCHAR(35) NOT NULL UNIQUE,
     description VARCHAR
 )
 ;
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS "Feedback" (
     product_id INT NOT NULL REFERENCES "Product"(id),
     title VARCHAR(20),
     description VARCHAR,
-    feedback_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    feedback_date_time TIMESTAMP WITH TIME ZONE NOT NULL,
     star "Star" NOT NULL
 )
 ;

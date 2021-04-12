@@ -1,6 +1,6 @@
 package com.epam.entity;
 
-import com.epam.enums.UserRole;
+import com.epam.entity.enums.UserRole;
 import lombok.*;
 
 @Getter

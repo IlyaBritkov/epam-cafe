@@ -1,10 +1,10 @@
 package com.epam.entity;
 
-import com.epam.enums.Star;
+import com.epam.entity.enums.Star;
 import lombok.*;
 import org.jetbrains.annotations.Nullable;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -12,35 +12,35 @@ import java.time.LocalDate;
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class Feedback extends AbstractBaseEntity {
     @Setter(AccessLevel.NONE)
-    private final Client client;
+    private final Long clientId;
 
     @Setter(AccessLevel.NONE)
-    private final Product product;
+    private final Long productId;
 
     @Nullable
     private String title;
     @Nullable
     private String description;
 
-    private LocalDate date;
+    private OffsetDateTime dateTime;
     private Star star;
 
-    public Feedback(Client client, Product product, @Nullable String title, @Nullable String description, LocalDate date, Star star) {
-        this.client = client;
-        this.product = product;
+    public Feedback(Long clientId, Long productId, @Nullable String title, @Nullable String description, OffsetDateTime dateTime, Star star) {
+        this.clientId = clientId;
+        this.productId = productId;
         this.title = title;
         this.description = description;
-        this.date = date;
+        this.dateTime = dateTime;
         this.star = star;
     }
 
-    public Feedback(Long id, Client client, Product product, String title, String description, LocalDate date, Star star) {
+    public Feedback(Long id, Long clientId, Long productId, @Nullable String title, @Nullable String description, OffsetDateTime dateTime, Star star) {
         super(id);
-        this.client = client;
-        this.product = product;
+        this.clientId = clientId;
+        this.productId = productId;
         this.title = title;
         this.description = description;
-        this.date = date;
+        this.dateTime = dateTime;
         this.star = star;
     }
 }

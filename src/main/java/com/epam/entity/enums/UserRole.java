@@ -1,4 +1,4 @@
-package com.epam.enums;
+package com.epam.entity.enums;
 
 public enum UserRole {
     ADMIN,
