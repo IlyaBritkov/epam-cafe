@@ -2,6 +2,7 @@ package com.epam.repository;
 
 import com.epam.db.TransactionIsolationType;
 import com.epam.entity.Product;
+import com.epam.util.Products;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.money.Money;
 
@@ -10,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,16 +35,17 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public List<Product> findAll() {
         TransactionalHandler<ResultSet> transactionalHandler = new TransactionalHandler<>();
+
         Transaction<ResultSet> transaction = connection -> {
             Statement statement = connection.createStatement();
             return statement.executeQuery("SELECT * FROM \"Product\"");
         };
 
-        List<Product> productList = new ArrayList<>();
+        List<Product> productList = new LinkedList<>();
 
         try {
-            ResultSet productResultSet = transactionalHandler.transactional(TransactionIsolationType.TRANSACTION_REPEATABLE_READ,
-                    transaction);
+            ResultSet productResultSet = transactionalHandler.transactional(
+                    TransactionIsolationType.TRANSACTION_REPEATABLE_READ, transaction);
             while (productResultSet.next()) {
                 Product product = buildProductEntity(productResultSet);
                 productList.add(product);
@@ -59,8 +62,10 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public Optional<Product> findById(Long id) {
         TransactionalHandler<ResultSet> transactionalHandler = new TransactionalHandler<>();
+
         Transaction<ResultSet> transaction = connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM \"Product\" WHERE id=?");
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "SELECT * FROM \"Product\" WHERE id=?");
             preparedStatement.setLong(1, id);
             return preparedStatement.executeQuery();
         };
@@ -81,23 +86,96 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
+    public List<Product> findByName(String name) {
+        TransactionalHandler<ResultSet> transactionalHandler = new TransactionalHandler<>();
+
+        List<Product> productList = new ArrayList<>();
+        try {
+            ResultSet productResultSet = transactionalHandler.transactional(connection -> {
+                PreparedStatement preparedStatement = connection.prepareStatement(
+                        "SELECT * FROM \"Product\" WHERE name=?;");
+                preparedStatement.setString(1, name);
+                return preparedStatement.executeQuery();
+            });
+            while (productResultSet.next()) {
+                Product product = buildProductEntity(productResultSet);
+                productList.add(product);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            log.error("Exception occurred while trying to find entities with name = {} : {}",
+                    name, throwables);
+        }
+        return productList;
+    }
+
+    @Override
     public Product add(Product product) {
-        return null;
+        TransactionalHandler<Integer> transactionalHandler = new TransactionalHandler<>();
+        try {
+            transactionalHandler.transactional(connection -> {
+                        PreparedStatement preparedStatement = connection.prepareStatement("" +
+                                "INSERT INTO \"Product\" (name, description, price) VALUES (?,?,?);");
+                        preparedStatement.setString(1, product.getName());
+                        preparedStatement.setString(2, product.getDescription());
+                        preparedStatement.setBigDecimal(3, product.getPrice().getAmount());
+                        return preparedStatement.executeUpdate();
+                    }
+            );
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            log.error("Exception occurred while trying to insert the data: {}, [{}]",
+                    throwables, String.format("name=%s, description=%s,price=%f",
+                            product.getName(), product.getDescription(), product.getPrice().getAmount()));
+        }
+        return product;
     }
 
     @Override
     public Product update(Product product) {
-        return null;
+        TransactionalHandler<Integer> transactionalHandler = new TransactionalHandler<>();
+
+        try {
+            transactionalHandler.transactional(connection -> {
+                PreparedStatement preparedStatement = connection.prepareStatement(
+                        "UPDATE \"Product\"" +
+                                "SET name = ?," +
+                                "    description = ?," +
+                                "    price=?" +
+                                "WHERE id=?");
+                preparedStatement.setString(1, product.getName());
+                preparedStatement.setString(2, product.getDescription());
+                preparedStatement.setBigDecimal(3, product.getPrice().getAmount());
+                preparedStatement.setLong(4, product.getId());
+                return preparedStatement.executeUpdate();
+            });
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            log.error("Exception occurred while trying to update entity {}: {}", product, throwables);
+        }
+
+        return product;
     }
 
     @Override
     public void removeById(Long id) {
-
+        TransactionalHandler<Integer> transactionalHandler = new TransactionalHandler<>();
+        try {
+            transactionalHandler.transactional(connection -> {
+                PreparedStatement preparedStatement = connection.prepareStatement("" +
+                        "DELETE FROM \"Product\" WHERE id=?;");
+                preparedStatement.setLong(1, id);
+                return preparedStatement.executeUpdate();
+            });
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            log.error("Exception occurred while trying to delete entity with id = {}: {}", id, throwables);
+        }
     }
 
     @Override
     public void remove(Product product) {
-
+        removeById(product.getId());
     }
 
     private Product buildProductEntity(ResultSet productResultSet) throws SQLException {
@@ -105,7 +183,7 @@ public class ProductRepositoryImpl implements ProductRepository {
         String productName = productResultSet.getString("name");
         String productDescription = productResultSet.getString("description");
         double productDoublePrice = productResultSet.getDouble("price");
-        Money productPrice = Money.of(Product.getCurrencyUnit(), productDoublePrice);
+        Money productPrice = Money.of(Products.getBYN_CURRENCY_UNIT(), productDoublePrice);
 
         Product product = new Product(productId, productName, productDescription, productPrice);
         log.trace("Product entity was built: {}", product);

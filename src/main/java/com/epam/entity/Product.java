@@ -1,8 +1,10 @@
 package com.epam.entity;
 
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.jetbrains.annotations.Nullable;
-import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 
 @Getter
@@ -14,9 +16,6 @@ public class Product extends AbstractBaseEntity {
 
     @Nullable
     private String description;
-
-    @Setter(AccessLevel.NONE)
-    private static CurrencyUnit currencyUnit = CurrencyUnit.of("BYN");
 
     private Money price;
 
@@ -35,7 +34,4 @@ public class Product extends AbstractBaseEntity {
         this.price = price;
     }
 
-    public static CurrencyUnit getCurrencyUnit() {
-        return currencyUnit;
-    }
 }

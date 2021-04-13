@@ -13,6 +13,8 @@ public interface ProductRepository extends Repository<Product, Long> {
     @Override
     Optional<Product> findById(Long id);
 
+    List<Product> findByName(String name);
+
     @Override
     Product add(Product product);
 
