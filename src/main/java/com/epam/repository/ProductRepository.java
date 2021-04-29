@@ -1,5 +1,6 @@
 package com.epam.repository;
 
+import com.epam.entity.Category;
 import com.epam.entity.Product;
 
 import java.util.List;
@@ -14,6 +15,10 @@ public interface ProductRepository extends Repository<Product, Long> {
     Optional<Product> findById(Long id);
 
     List<Product> findByName(String name);
+
+    List<Product> findByCategoryId(Long categoryId);
+
+    List<Product> findByCategory(Category category);
 
     @Override
     Product add(Product product);

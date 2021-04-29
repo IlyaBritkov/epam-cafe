@@ -1,6 +1,7 @@
 package com.epam.repository;
 
 import com.epam.db.TransactionIsolationType;
+import com.epam.entity.Category;
 import com.epam.entity.Product;
 import com.epam.util.Products;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ import java.util.Optional;
  * Singleton
  **/
 @Slf4j
-public class ProductRepositoryImpl implements ProductRepository {
+public class ProductRepositoryImpl implements ProductRepository { // todo
     private static ProductRepositoryImpl INSTANCE;
 
     private ProductRepositoryImpl() {
@@ -44,11 +45,14 @@ public class ProductRepositoryImpl implements ProductRepository {
         List<Product> productList = new LinkedList<>();
 
         try {
-            ResultSet productResultSet = transactionalHandler.transactional(
+            Optional<ResultSet> optionalProductResultSet = transactionalHandler.transactional(
                     TransactionIsolationType.TRANSACTION_REPEATABLE_READ, transaction);
-            while (productResultSet.next()) {
-                Product product = buildProductEntity(productResultSet);
-                productList.add(product);
+            if (optionalProductResultSet.isPresent()) {
+                ResultSet productResultSet = optionalProductResultSet.get();
+                while (productResultSet.next()) {
+                    Product product = buildProductEntity(productResultSet);
+                    productList.add(product);
+                }
             }
         } catch (SQLException throwables) {
             log.error("SQL interaction is failed: ", throwables);
@@ -72,10 +76,13 @@ public class ProductRepositoryImpl implements ProductRepository {
 
         Optional<Product> optionalProduct = Optional.empty();
         try {
-            ResultSet productResultSet = transactionalHandler.transactional(transaction);
-            while (productResultSet.next()) {
-                Product product = buildProductEntity(productResultSet);
-                optionalProduct = Optional.of(product);
+            Optional<ResultSet> optionalProductResultSet = transactionalHandler.transactional(transaction);
+            if (optionalProductResultSet.isPresent()) {
+                ResultSet productResultSet = optionalProductResultSet.get();
+                while (productResultSet.next()) {
+                    Product product = buildProductEntity(productResultSet);
+                    optionalProduct = Optional.of(product);
+                }
             }
         } catch (SQLException throwables) {
             log.error("SQL interaction is failed: ", throwables);
@@ -91,15 +98,18 @@ public class ProductRepositoryImpl implements ProductRepository {
 
         List<Product> productList = new ArrayList<>();
         try {
-            ResultSet productResultSet = transactionalHandler.transactional(connection -> {
+            Optional<ResultSet> optionalProductResultSet = transactionalHandler.transactional(connection -> {
                 PreparedStatement preparedStatement = connection.prepareStatement(
                         "SELECT * FROM \"Product\" WHERE name=?;");
                 preparedStatement.setString(1, name);
                 return preparedStatement.executeQuery();
             });
-            while (productResultSet.next()) {
-                Product product = buildProductEntity(productResultSet);
-                productList.add(product);
+            if (optionalProductResultSet.isPresent()) {
+                ResultSet productResultSet = optionalProductResultSet.get();
+                while (productResultSet.next()) {
+                    Product product = buildProductEntity(productResultSet);
+                    productList.add(product);
+                }
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -107,6 +117,19 @@ public class ProductRepositoryImpl implements ProductRepository {
                     name, throwables);
         }
         return productList;
+    }
+
+
+    // todo
+    @Override
+    public List<Product> findByCategoryId(Long categoryId) {
+        return null;
+    }
+
+    // todo
+    @Override
+    public List<Product> findByCategory(Category category) {
+        return null;
     }
 
     @Override
@@ -131,6 +154,7 @@ public class ProductRepositoryImpl implements ProductRepository {
         return product;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public Product update(Product product) {
         TransactionalHandler<Integer> transactionalHandler = new TransactionalHandler<>();

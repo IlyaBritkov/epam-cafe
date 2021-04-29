@@ -1,15 +1,14 @@
 package com.epam.util;
 
 import lombok.Getter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+@Slf4j
 public final class PropertyReader {
-    private static final Logger logger = LoggerFactory.getLogger(PropertyReader.class);
     @Getter
     private static final Properties properties = new Properties();
 
@@ -24,9 +23,9 @@ public final class PropertyReader {
         final String propertiesFileName = "dbConfiguration.properties";
         try (InputStream inputStream = PropertyReader.class.getClassLoader().getResourceAsStream(propertiesFileName)) {
             properties.load(inputStream);
-            logger.info("Properties were loaded from file: {}", propertiesFileName);
+            log.info("Properties were loaded from file: {}", propertiesFileName);
         } catch (IOException e) {
-            logger.error("Loading properties from file {} failed", propertiesFileName);
+            log.error("Loading properties from file {} failed", propertiesFileName);
             e.printStackTrace();
         }
     }
